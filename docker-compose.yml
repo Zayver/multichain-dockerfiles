@@ -1,0 +1,70 @@
+version: '3.9'
+services:
+  machine1:
+    container_name: multichain1
+    hostname: multichain1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+    volumes:
+      - 'my-db:/data/docker1'
+    working_dir: '/root'
+    tty: true
+    command: /bin/bash
+    networks: 
+      multichain:
+        ipv4_address: 10.1.0.100
+
+  machine2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: multichain2
+    hostname: multichain2
+    ports:
+      - '5001:5001'
+      - '7332:7332'
+    expose:
+      - '5001'
+      - '7332'
+    volumes:
+      - 'my-db:/data/docker2'
+    working_dir: '/root'
+    tty: true
+    command: /bin/bash
+    networks:
+      multichain:
+        ipv4_address: 10.1.0.101
+  machine3:
+    build:
+      context: .
+      dockerfile: Dockerfile.web_demo
+    container_name: multichain3
+    hostname: multichain3
+    working_dir: '/root'
+    ports:
+      - '5002:5002'
+      - '4444:4444'
+    expose:
+      - '5002'
+      - '4444'
+    volumes:
+      - 'my-db:/data/docker3'
+    tty: true
+    command: /bin/bash
+    networks:
+      multichain:
+        ipv4_address: 10.1.0.102
+volumes:
+  my-db: null
+networks:
+  multichain:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24

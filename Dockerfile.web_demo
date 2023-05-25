@@ -1,0 +1,12 @@
+FROM greyltc/archlinux-aur:yay
+WORKDIR /tmp
+RUN pacman -Sy 
+RUN pacman-key --init
+RUN pacman-key --populate
+RUN pacman -Sy archlinux-keyring --noconfirm
+RUN pacman -S wget git python neovim --noconfirm
+RUN wget https://www.multichain.com/download/multichain-2.3.3.tar.gz
+RUN tar -xvzf multichain-2.3.3.tar.gz
+WORKDIR multichain-2.3.3
+RUN mv multichaind multichain-cli multichain-util /usr/local/bin
+RUN sudo -u ab -D~ bash -c 'yay -Syu --removemake --needed --noprogressbar --noconfirm xampp'
